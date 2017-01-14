@@ -148,8 +148,8 @@ public class Client {
                 } else if (respond.streamResponse != null && respond.streamResponse.getOutputStream() != null) {
                     respond.streamResponse.getOutputStream().flush();
                 } else {
-                    if (!respond.hasHeader("Content-Type"))
-                        respond.addHeader("Content-Type", "text/html; charset=UTF-8");
+                    if (!respond.hasHeader("Content-VideoType"))
+                        respond.addHeader("Content-VideoType", "text/html; charset=UTF-8");
 
                     if (respond.rawContents != null)
                         respond.addHeader("Content-Length", "" + respond.rawContents.length);

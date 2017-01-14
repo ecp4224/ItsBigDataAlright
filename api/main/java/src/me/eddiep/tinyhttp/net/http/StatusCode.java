@@ -28,7 +28,7 @@ public enum StatusCode {
     PreconditionFailed(412, "Precondition Failed"),
     RequestEntityTooLarge(413, "Request Entity Too Large"),
     RequestURITooLong(414, "Request-URI Too Long"),
-    UnsupportedMediaType(415, "Unsupported Media Type"),
+    UnsupportedMediaType(415, "Unsupported Media VideoType"),
     RequestedRangeNotSatisfiable(416, "Requested Range Not Satisfiable"),
     ExpectationFailed(417, "Expectation Failed"),
     InternalServerError(500, "Internal Server Error"),

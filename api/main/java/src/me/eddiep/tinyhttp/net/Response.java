@@ -48,10 +48,10 @@ public class Response {
      * @return The content type of this response as a {@link java.lang.String}
      */
     public String getContentType() {
-        if (!hasHeader("Content-Type"))
-            addHeader("Content-Type", "text/html");
+        if (!hasHeader("Content-VideoType"))
+            addHeader("Content-VideoType", "text/html");
 
-        return headers.get("Content-Type");
+        return headers.get("Content-VideoType");
     }
 
     /**
@@ -92,7 +92,7 @@ public class Response {
      * @param type The content type of this response as a {@link java.lang.String}
      */
     public void setContentType(String type) {
-        addHeader("Content-Type", type);
+        addHeader("Content-VideoType", type);
     }
 
     /**

@@ -49,8 +49,8 @@ public class StreamResponse extends Response {
 
         out = getClient().getSocket().getOutputStream();
 
-        if (!hasHeader("Content-Type"))
-            addHeader("Content-Type", "text/html; charset=UTF-8");
+        if (!hasHeader("Content-VideoType"))
+            addHeader("Content-VideoType", "text/html; charset=UTF-8");
 
 
         addHeader("Content-Length", "" + contentLength);
