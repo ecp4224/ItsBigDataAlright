@@ -38,9 +38,8 @@ public class FetchTask implements Cancelable {
                 }
 
                 ArrayHelper.combindAsync(futures, p -> {
-                    futures.clear();
-
                     VideoStore.saveVideos(p);
+                    futures.clear();
                 });
 
                 while (!futures.isEmpty()) {
