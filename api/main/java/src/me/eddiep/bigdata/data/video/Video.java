@@ -26,6 +26,14 @@ public class Video {
         return video;
     }
 
+    public static Video toVideo(String url, VideoType type) {
+        Video video = new Video();
+        video.url = url;
+        video.type = type;
+
+        return video;
+    }
+
     private Video() { }
 
     public VideoType getType() {

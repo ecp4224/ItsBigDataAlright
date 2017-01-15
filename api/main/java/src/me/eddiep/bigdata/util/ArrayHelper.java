@@ -2,7 +2,10 @@ package me.eddiep.bigdata.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * A utility class for doing basic things with arrays
@@ -46,6 +49,17 @@ public class ArrayHelper {
             list.add(newItem);
         }
         return list;
+    }
+
+    public static <T> List<T> trim(List<T> original, PFunction<T, Boolean> condition) {
+        Iterator<T> iterator = original.iterator();
+        while (iterator.hasNext()) {
+            T item = iterator.next();
+            if (condition.run(item))
+                iterator.remove();
+        }
+
+        return original;
     }
 
     public static <T, R> R[] transform(T[] original, PFunction<T, R> func) {
@@ -115,5 +129,99 @@ public class ArrayHelper {
 
     public static <T> T random(List<T> list) {
         return list.get(RandomHelper.random(list.size()));
+    }
+
+    public static <T> List<T> combind(Future<List<T>>... lists) throws ExecutionException, InterruptedException {
+        List<T> list = new ArrayList<T>();
+
+        for (Future<List<T>> listFuture : lists) {
+            if (listFuture.isCancelled())
+                continue;
+
+            List<T> l = listFuture.get();
+            if (l != null)
+                list.addAll(l);
+        }
+
+        return list;
+    }
+
+    public static <T> List<T> combind(List<Future<List<T>>> lists) throws ExecutionException, InterruptedException {
+        List<T> list = new ArrayList<T>();
+
+        for (Future<List<T>> listFuture : lists) {
+            if (listFuture.isCancelled())
+                continue;
+
+            List<T> l = listFuture.get();
+            if (l != null)
+                list.addAll(l);
+        }
+
+        return list;
+    }
+
+    public static <T> Future<List<T>> combindAsync(PRunnable<List<T>> callback, Future<List<T>>... lists) {
+        CancelToken token = new CancelToken();
+        EasyFuture<List<T>> future = new EasyFuture<>(token);
+
+        new Thread(() -> {
+            List<T> list = new ArrayList<T>();
+
+            for (Future<List<T>> listFuture : lists) {
+                if (token.isCanceled())
+                    return;
+                if (listFuture.isCancelled())
+                    continue;
+
+                List<T> l = null;
+                try {
+                    l = listFuture.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+                if (l != null)
+                    list.addAll(l);
+            }
+
+            future.setValue(list);
+
+            if (callback != null)
+                callback.run(list);
+        }).start();
+
+        return future;
+    }
+
+    public static <T> Future<List<T>> combindAsync(List<Future<List<T>>> lists, PRunnable<List<T>> callback) {
+        CancelToken token = new CancelToken();
+        EasyFuture<List<T>> future = new EasyFuture<>(token);
+
+        new Thread(() -> {
+            List<T> list = new ArrayList<T>();
+
+            for (Future<List<T>> listFuture : lists) {
+                if (token.isCanceled())
+                    return;
+                if (listFuture.isCancelled())
+                    continue;
+
+                List<T> l = null;
+                try {
+                    l = listFuture.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+                if (l != null)
+                    list.addAll(l);
+            }
+
+            future.setValue(list);
+
+            if (callback != null)
+                callback.run(list);
+        }).start();
+
+        return future;
     }
 }

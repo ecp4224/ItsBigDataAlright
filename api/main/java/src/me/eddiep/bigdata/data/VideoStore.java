@@ -8,14 +8,14 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptionDefaults;
 import me.eddiep.bigdata.data.video.Video;
 import me.eddiep.bigdata.data.video.VideoType;
+import me.eddiep.bigdata.util.ArrayHelper;
+import me.eddiep.bigdata.util.P2Runnable;
+import me.eddiep.bigdata.util.PFunction;
 import me.eddiep.jconfig.JConfig;
 import org.bson.Document;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 
 import static me.eddiep.bigdata.util.RandomHelper.*;
 
@@ -56,6 +56,22 @@ public class VideoStore {
                 return true;
         }
         return false;
+    }
+
+    public static void saveVideos(List<Video> videos) {
+        ArrayHelper.trim(videos, VideoStore::hasVideo);
+
+        List<Document> documents = ArrayHelper.transform(videos, Video::asDocument);
+
+        videoCollection.insertMany(documents);
+    }
+
+    public static boolean hasVideo(Video video) {
+        return hasVideo(video.getUrl());
+    }
+
+    public static boolean hasVideo(String url) {
+        return videoCollection.find(new Document("url", url)).first() != null;
     }
 
     public static void saveVideo(Video video) {
