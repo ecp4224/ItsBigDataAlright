@@ -2,9 +2,9 @@ package me.eddiep.bigdata;
 
 import me.eddiep.bigdata.data.VideoStore;
 import me.eddiep.bigdata.data.fetch.FetchTask;
-import me.eddiep.bigdata.data.fetch.Fetcher;
-import me.eddiep.bigdata.data.fetch.ItsBigDataAlrightFetcher;
+import me.eddiep.bigdata.data.fetch.impl.FacebookFetcher;
 import me.eddiep.bigdata.http.HttpListener;
+import me.eddiep.bigdata.util.Constants;
 import me.eddiep.tinyhttp.TinyHttpServer;
 
 import java.io.IOException;
@@ -19,12 +19,14 @@ public class Main {
         task.start(); //Start the task
 
         HttpListener listener = new HttpListener(); //Init the HTTP listener
-        TinyHttpServer server = new TinyHttpServer(80, listener, false); //Init the HTTP server
+        TinyHttpServer server = new TinyHttpServer(8080, listener, false); //Init the HTTP server
 
         server.start(); //Start the server
     }
 
     private static void addFetchers(FetchTask task) {
-        task.addFetcher(new ItsBigDataAlrightFetcher());
+        task.addFetcher(new FacebookFetcher("" + Constants.GROUP_ID));
+        task.addFetcher(new FacebookFetcher("unexpectedMemes"));
+        task.addFetcher(new FacebookFetcher("1687331191556534"));
     }
 }

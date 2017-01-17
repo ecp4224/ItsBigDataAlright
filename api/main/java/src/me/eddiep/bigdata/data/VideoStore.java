@@ -60,6 +60,8 @@ public class VideoStore {
 
     public static void saveVideos(List<Video> videos) {
         ArrayHelper.trim(videos, VideoStore::hasVideo);
+        if (videos.size() == 0)
+            return;
 
         List<Document> documents = ArrayHelper.transform(videos, Video::asDocument);
 

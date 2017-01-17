@@ -51,7 +51,7 @@ public class Video {
     public Document asDocument() {
         return new Document()
                 .append("url", url)
-                .append("type", type)
+                .append("type", type.getType())
                 .append("time_posted", time_posted);
     }
 

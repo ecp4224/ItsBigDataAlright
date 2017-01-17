@@ -15,17 +15,20 @@ class HttpListener : TinyListener {
     fun fetchV1(request: Request, response: Response) {
         var count = 1
         var type = "mix"
-        val params = request.fileRequest.split("?")[1]
-        if (!params.trim().equals("")) {
-            val options = params.split("&")
-            for (option in options) {
-                val key = option.split("=")[0]
-                val value = option.split("=")[1]
+        val paramsList = request.fileRequest.split("?")
+        if (paramsList.size > 1) {
+            val params = paramsList[1];
+            if (!params.trim().equals("")) {
+                val options = params.split("&")
+                for (option in options) {
+                    val key = option.split("=")[0]
+                    val value = option.split("=")[1]
 
-                if (key.toLowerCase().equals("count")) {
-                    count = value.toInt()
-                } else if (key.toLowerCase().equals("type")) {
-                    type = value
+                    if (key.toLowerCase().equals("count")) {
+                        count = value.toInt()
+                    } else if (key.toLowerCase().equals("type")) {
+                        type = value
+                    }
                 }
             }
         }
@@ -43,7 +46,8 @@ class HttpListener : TinyListener {
             else
                 VideoStore.getRandomVideos(count, VideoType.parse(type))
 
-            response.echo(Constants.GSON.toJson(videos))
+            val json = Constants.GSON.toJson(videos)
+            response.echo(json)
         } else {
             response.echo("[]")
         }
