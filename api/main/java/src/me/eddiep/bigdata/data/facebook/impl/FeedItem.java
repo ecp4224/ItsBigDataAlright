@@ -1,4 +1,4 @@
-package me.eddiep.bigdata.util;
+package me.eddiep.bigdata.data.facebook.impl;
 
 public class FeedItem {
     private String link;

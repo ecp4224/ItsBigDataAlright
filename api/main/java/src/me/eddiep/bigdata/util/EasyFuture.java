@@ -15,11 +15,13 @@ public class EasyFuture<T> implements Future<T> {
         this.cancelable = cancelable;
     }
 
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public synchronized boolean cancel(boolean mayInterruptIfRunning) {
         if (value != null)
             return false;
 
         cancelable.cancel();
+
+        super.notifyAll();
 
         return cancelable.isCanceled();
     }
@@ -32,7 +34,13 @@ public class EasyFuture<T> implements Future<T> {
         return value != null;
     }
 
-    public synchronized void setValue(T value) {
+    public synchronized void end() {
+        if (isCancelled())
+            return;
+        super.notifyAll();
+    }
+
+    public synchronized void end(T value) {
         if (isCancelled())
             return;
         this.value = value;
@@ -58,5 +66,13 @@ public class EasyFuture<T> implements Future<T> {
         if (value == null)
             throw new TimeoutException();
         return value;
+    }
+
+    public T getSavedValue() {
+        return value;
+    }
+
+    public void saveValue(@NotNull T value) {
+        this.value = value;
     }
 }

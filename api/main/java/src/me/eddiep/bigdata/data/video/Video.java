@@ -1,17 +1,22 @@
 package me.eddiep.bigdata.data.video;
 
+import me.eddiep.bigdata.data.Reaction;
 import org.bson.Document;
 
 public class Video {
     private VideoType type;
     private String url;
     private long time_posted;
+    private Reaction reaction;
 
     public static Video toVideo(Document document) {
         Video video = new Video();
         String url = document.getString("url");
         String type = document.getString("type");
         long time_posted = document.getLong("time_posted");
+
+        Document document1 = document.get("reacts", Document.class);
+
 
         video.url = url;
         for (VideoType t : VideoType.values()) {
@@ -22,19 +27,26 @@ public class Video {
         }
 
         video.time_posted = time_posted;
+        video.reaction = new Reaction(document1);
 
         return video;
     }
 
-    public static Video toVideo(String url, VideoType type) {
+    public static Video toVideo(String url, VideoType type, Reaction reaction) {
         Video video = new Video();
         video.url = url;
         video.type = type;
+        video.reaction = reaction;
+        video.time_posted = System.currentTimeMillis();
 
         return video;
     }
 
     private Video() { }
+
+    public Reaction getReaction() {
+        return reaction;
+    }
 
     public VideoType getType() {
         return type;
@@ -52,7 +64,8 @@ public class Video {
         return new Document()
                 .append("url", url)
                 .append("type", type.getType())
-                .append("time_posted", time_posted);
+                .append("time_posted", time_posted)
+                .append("reacts", reaction.asDocument());
     }
 
     @Override

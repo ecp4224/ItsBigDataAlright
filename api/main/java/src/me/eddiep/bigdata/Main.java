@@ -26,7 +26,5 @@ public class Main {
 
     private static void addFetchers(FetchTask task) {
         task.addFetcher(new FacebookFetcher("" + Constants.GROUP_ID));
-        task.addFetcher(new FacebookFetcher("unexpectedMemes"));
-        task.addFetcher(new FacebookFetcher("1687331191556534"));
     }
 }

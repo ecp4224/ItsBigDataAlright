@@ -184,7 +184,7 @@ public class ArrayHelper {
                     list.addAll(l);
             }
 
-            future.setValue(list);
+            future.end(list);
 
             if (callback != null)
                 callback.run(list);
@@ -216,7 +216,7 @@ public class ArrayHelper {
                     list.addAll(l);
             }
 
-            future.setValue(list);
+            future.end(list);
 
             if (callback != null)
                 callback.run(list);
